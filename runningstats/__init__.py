@@ -25,17 +25,26 @@ class Statistics():
         '''
         B = np.array(values, copy=False, ndmin=1)
 
+        n = len(B)
+        mean = B.mean()
+        M2 = np.sum((B - mean) ** 2)
+        M3 = np.sum((B - mean) ** 3)
+        M4 = np.sum((B - mean) ** 4)
+
+        self.update_from_moments(n, mean, M2, M3, M4)
+
+    def update_from_moments(self, n, mean, M2, M3, M4):
         n_A = self._n
         mean_A = self._mean
         M2_A = self._M2
         M3_A = self._M3
         M4_A = self._M4
 
-        n_B = len(B)
-        mean_B = B.mean()
-        M2_B = np.sum((B - mean_B) ** 2)
-        M3_B = np.sum((B - mean_B) ** 3)
-        M4_B = np.sum((B - mean_B) ** 4)
+        n_B = n
+        mean_B = mean
+        M2_B = M2
+        M3_B = M3
+        M4_B = M4
 
         n_X = n_A + n_B
         delta = mean_B - mean_A
@@ -59,38 +68,8 @@ class Statistics():
         )
 
     def update(self, other):
-        n_A = self._n
-        mean_A = self._mean
-        M2_A = self._M2
-        M3_A = self._M3
-        M4_A = self._M4
-
-        n_B = other._n
-        mean_B = other._mean
-        M2_B = other._M2
-        M3_B = other._M3
-        M4_B = other._M4
-
-        n_X = n_A + n_B
-        delta = mean_B - mean_A
-        delta_per_n = delta / n_X
-
-        self._n = n_X
-        self._mean = (n_A * mean_A + n_B * mean_B) / n_X
-        self._M2 = M2_A + M2_B + delta * delta_per_n * n_A * n_B
-
-        self._M3 = (
-            M3_A + M3_B +
-            delta * delta_per_n**2 * n_A * n_B * (n_A - n_B) +
-            3 * delta_per_n * (n_A * M2_B - n_B * M2_A)
-        )
-
-        self._M4 = (
-            M4_A + M4_B +
-            delta * delta_per_n**3 * n_A * n_B * (n_A**2 - n_A*n_B + n_B**2) +
-            6 * delta_per_n**2 * (n_A**2 * M2_B + n_B**2 * M2_A) +
-            4 * delta_per_n * (n_A * M3_B - n_B * M3_A)
-        )
+        ''' Update the Statistics object with another statistics object '''
+        self.update_from_moments(other._n, other._mean, other._M2, other._M3, other._M4)
 
     def __len__(self):
         return self._n

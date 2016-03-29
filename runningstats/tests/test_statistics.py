@@ -74,3 +74,22 @@ def test_update_result():
     assert np.isclose(s1.std, np.std(data, ddof=1))
     assert np.isclose(s1.skewness, skew(data, axis=None))
     assert np.isclose(s1.kurtosis, kurtosis(data, axis=None))
+
+
+def test_combine_result():
+    from .. import Statistics
+    from scipy.stats import skew, kurtosis
+
+    stats = [Statistics() for i in range(5)]
+    data = np.array([np.random.normal(i, 1, size=(100, 10)) for i in range(5)])
+
+    for s, d in zip(stats, data):
+        for row in d:
+            s.fill(row)
+
+    s = Statistics.combine(stats)
+
+    assert np.isclose(s.mean, np.mean(data))
+    assert np.isclose(s.std, np.std(data, ddof=1))
+    assert np.isclose(s.skewness, skew(data, axis=None))
+    assert np.isclose(s.kurtosis, kurtosis(data, axis=None))

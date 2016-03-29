@@ -71,6 +71,15 @@ class Statistics():
         ''' Update the Statistics object with another statistics object '''
         self.update_from_moments(other._n, other._mean, other._M2, other._M3, other._M4)
 
+    @classmethod
+    def combine(cls, iterable):
+        s = cls()
+
+        for other in iterable:
+            s.update(other)
+
+        return s
+
     def __len__(self):
         return self._n
 

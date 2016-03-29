@@ -118,13 +118,15 @@ class Statistics():
         return self._n * self._M4 / (self._M2 ** 2) - 3
 
     def __repr__(self):
-        vals = ['Statistics']
         if self._n >= 1e5:
-            vals.append('Entries: {: .4g}'.format(float(self._n)))
+            entries = '{: .4g}'.format(float(self._n))
         else:
-            vals.append('Entries {: 5d}'.format(self._n))
+            entries = '{: 5d}'.format(self._n)
 
-        vals.append('Mean: {:.4g}'.format(self.mean))
-        vals.append('StdDev: {:.4g}'.format(self.std))
+        r = self.__class__.__name__ + '(\n'
+        r += '  Entries: ' + entries + '\n'
+        r += '  Mean:     {:.4g} \n'.format(self.mean)
+        r += '  StdDev:   {:.4g}'.format(self.std)
+        r += '\n)'
 
-        return '\n\t'.join(vals)
+        return r
